@@ -1,0 +1,39 @@
+.inventory-content .inventory-text {
+	z-index: 222;
+	backdrop-filter: blur(20px);
+	max-width: 650px;
+	box-shadow: 0px 30px 40px -20px hsl(229, 6%, 66%);
+	padding: 30px;
+	/* margin: 20px; */
+	/* margin-right: 200px; */
+	border-radius: 10px;
+	/* transform: translateX(-80px); */
+}
+
+.inventory-textbox {
+	box-shadow: 0px 0px 20px -10px hsl(229, 6%, 66%);
+	padding: 20px;
+	border-radius: 10px;
+}
+.inventory-form {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.inventory-form input {
+	box-shadow: 0px 30px 40px -20px hsl(229, 6%, 66%);
+	padding: 30px;
+	border-radius: 10px;
+	border: 1px solid #ccc;
+	color: black;
+}
+.inventory-form button {
+	padding-left: 80px;
+	padding-right: 80px;
+}
+@media (max-width: 768px) {
+	.inventory-content .inventory-text {
+		margin-right: 0px;
+		transform: translateX(0px);
+	}
+}

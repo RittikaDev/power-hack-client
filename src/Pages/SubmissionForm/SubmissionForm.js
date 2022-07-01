@@ -20,15 +20,22 @@ const SubmissionForm = ({ paidTotal }) => {
   const [updateTrue, setUpdateTrue] = useState(false);
   const [search, setSearch] = useState("");
 
+  // Errors
+  const [emailError, setEmailError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
   // Input fields
   const changeName = (e) => {
     setName(e.target.value);
   };
   const changeEmail = (e) => {
     setEmail(e.target.value);
+    setEmailError(false);
+    setPhoneError(false);
   };
   const changePhone = (e) => {
     setPhone(e.target.value);
+    setEmailError(false);
+    setPhoneError(false);
   };
   const changeAmount = (e) => {
     setAmount(e.target.value);
@@ -44,40 +51,39 @@ const SubmissionForm = ({ paidTotal }) => {
     //   amount: event.target.amount.value,
     //   id: "",
     // };
-    const addBill = {
-      name: name,
-      email: email,
-      phone: phone,
-      amount: amount,
-      id: "",
-    };
-    // axios;
-    axios
-      .post("http://localhost:5000/add-billing", addBill)
-      .then((res) => {
-        setTrueID(true);
-        setBill([res.data[1], ...bill]);
-        if (res.status == 202) {
-          setBill([addBill, ...bill]);
-        }
-      })
-      .catch((err) => {
-        setTrueID(false);
-        setUiBill([addBill, ...uiBill]);
-      });
-  };
-  const updateData = (id) => {
-    setUpdateTrue(true);
-    const addBill = {
-      name: name,
-      email: email,
-      phone: phone,
-      amount: amount,
-      id: "",
-    };
-    setUpdate(addBill);
-    console.log(update);
-    // setDataUpdate(id);
+    const emailRegexValidate = /\S+@\S+\.\S+/;
+    const validatedEmail = emailRegexValidate.test(email);
+    const validatedPhone = phone.length == 11;
+    if (validatedEmail && validatedPhone) {
+      const addBill = {
+        name: name,
+        email: email,
+        phone: phone,
+        amount: amount,
+        id: "",
+      };
+      // axios;
+      axios
+        .post("http://localhost:5000/add-billing", addBill)
+        .then((res) => {
+          setTrueID(true);
+          setBill([res.data[1], ...bill]);
+          if (res.status == 202) {
+            setBill([addBill, ...bill]);
+          }
+        })
+        .catch((err) => {
+          setTrueID(false);
+          setUiBill([addBill, ...uiBill]);
+        });
+    } else {
+      if (!validatedEmail) {
+        setEmailError(true);
+      }
+      if (!validatedPhone) {
+        setPhoneError(true);
+      }
+    }
   };
 
   return (
@@ -116,6 +122,7 @@ const SubmissionForm = ({ paidTotal }) => {
             </div>
             <p className="inventory-textbox">
               <input
+                required
                 name="name"
                 placeholder="Full Name"
                 type="text"
@@ -124,20 +131,28 @@ const SubmissionForm = ({ paidTotal }) => {
             </p>
             <p className="inventory-textbox">
               <input
+                required
                 name="email"
                 placeholder="Email"
                 type="email"
                 onBlur={changeEmail}
               />
             </p>
+            {emailError && (
+              <p className="text-red-500">Input A Correct Email</p>
+            )}
             <p className="inventory-textbox">
               <input
+                required
                 name="phone"
                 placeholder="Phone"
                 type="number"
                 onBlur={changePhone}
               />
             </p>
+            {phoneError && (
+              <p className="text-red-500">Input A Correct Phone Number</p>
+            )}
             <p className="inventory-textbox">
               <input
                 required
@@ -157,11 +172,7 @@ const SubmissionForm = ({ paidTotal }) => {
                   Submit
                 </button>
               ) : (
-                <button
-                  type="submit"
-                  className="btn py-2 mx-auto"
-                  onClick={updateData}
-                >
+                <button type="submit" className="btn py-2 mx-auto">
                   Update
                 </button>
               )}

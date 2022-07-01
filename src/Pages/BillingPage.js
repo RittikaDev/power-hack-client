@@ -35,23 +35,9 @@ const BillingPage = ({
     .map((item) => parseInt(item.amount))
     .reduce((prev, curr) => prev + curr, 0);
   paidTotal(sumall);
+
   const updateData = (id) => {
     console.log(update);
-    // setDataUpdate(id);
-    // const url = `http://localhost:5000/update-billing/${id}`;
-    // fetch(url, {
-    //   method: "PUT",
-    //   headers: {
-    //     "content-type": "application/json",
-    //   },
-    //   body: JSON.stringify(user),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log("success", data);
-    //     alert("Profile Updated Successfully!!!");
-    //     // e.target.reset();
-    //   });
   };
   const handleDelete = (id) => {
     Swal.fire({

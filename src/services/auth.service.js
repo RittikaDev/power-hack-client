@@ -4,7 +4,7 @@ const API_URL = "http://localhost:5000/auth";
 
 const signup = (email, password) => {
   return axios
-    .post(API_URL + "/signup", {
+    .post(API_URL + "/registration", {
       email,
       password,
     })
@@ -12,7 +12,6 @@ const signup = (email, password) => {
       if (response.data.accessToken) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
-
       return response.data;
     });
 };

@@ -3,84 +3,184 @@ import "./SubmissionForm.css";
 import axios from "axios";
 import useBills from "../../hooks/useBills";
 import BillingPage from "../BillingPage";
+import Modal from "./Modal";
 
-const SubmissionForm = () => {
-	const [bill, setBill] = useBills([]);
-	const [search, setSearch] = useState("");
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		const addBill = {
-			name: event.target.name.value,
-			email: event.target.email.value,
-			phone: event.target.phone.value,
-			amount: event.target.amount.value,
-		};
-		axios.post("http://localhost:5000/add-billing", addBill).then((res) => {
-			console.log(res.data[1]);
-			setBill([res.data[1], ...bill]);
-		});
-	};
+const SubmissionForm = ({ paidTotal }) => {
+  // Form data
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [amount, setAmount] = useState("");
 
-	return (
-		<>
-			<div className="navbar bg-base-100 drop-shadow-lg rounded-lg mt-20 mb-5">
-				<div className="flex-1">
-					<input
-						type="text"
-						placeholder="Search..."
-						className="input input-bordered input-info w-full max-w-xs"
-						onChange={(event) => {
-							setSearch(event.target.value);
-						}}
-					/>
-				</div>
-				<div className="flex-none">
-					<ul className="menu menu-horizontal p-0">
-						<label for="my-modal-6" class="btn btn-xs btn-warning mr-5">
-							Add New Bill
-						</label>
-					</ul>
-				</div>
-			</div>
-			<input type="checkbox" id="my-modal-6" class="modal-toggle" />
-			<div class="modal modal-bottom sm:modal-middle">
-				<div class="modal-box">
-					<label
-						for="my-modal-6"
-						class="btn btn-sm btn-circle absolute right-2 top-2"
-					>
-						✕
-					</label>
-					{/* <SubmissionForm /> */}
-					<form className="inventory-text mx-16 my-5" onSubmit={handleSubmit}>
-						<div className="inventory-textbox mb-1">
-							<h4 className="text-center font-bold">Add Bill</h4>
-						</div>
-						<p className="inventory-textbox">
-							<input name="name" placeholder="Full Name" type="text" />
-						</p>
-						<p className="inventory-textbox">
-							<input name="email" placeholder="Email" type="email" />
-						</p>
-						<p className="inventory-textbox">
-							<input name="phone" placeholder="Phone" type="number" />
-						</p>
-						<p className="inventory-textbox">
-							<input name="amount" placeholder="Paid Amount" type="number" />
-						</p>
-						<div className="modal-action text-center py-2 ">
-							<button type="submit" className="btn py-2 mx-auto">
-								Submit
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-			<BillingPage bill={bill} search={search} />
-		</>
-		// powerHack mongo username
-		// 0rcp7Z04M2WU9iFe mongo pass
-	);
+  console.log(name);
+  const [bill, setBill] = useBills([]);
+  const [update, setUpdate] = useState([]);
+  const [uiBill, setUiBill] = useBills([]);
+  const [trueID, setTrueID] = useState(true);
+  const [updateTrue, setUpdateTrue] = useState(false);
+  const [search, setSearch] = useState("");
+
+  // Input fields
+  const changeName = (e) => {
+    setName(e.target.value);
+  };
+  const changeEmail = (e) => {
+    setEmail(e.target.value);
+  };
+  const changePhone = (e) => {
+    setPhone(e.target.value);
+  };
+  const changeAmount = (e) => {
+    setAmount(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    setUpdateTrue(false);
+    // event.preventDefault();
+    // const addBill = {
+    //   name: event.target.name.value,
+    //   email: event.target.email.value,
+    //   phone: event.target.phone.value,
+    //   amount: event.target.amount.value,
+    //   id: "",
+    // };
+    const addBill = {
+      name: name,
+      email: email,
+      phone: phone,
+      amount: amount,
+      id: "",
+    };
+    // axios;
+    axios
+      .post("http://localhost:5000/add-billing", addBill)
+      .then((res) => {
+        setTrueID(true);
+        setBill([res.data[1], ...bill]);
+        if (res.status == 202) {
+          setBill([addBill, ...bill]);
+        }
+      })
+      .catch((err) => {
+        setTrueID(false);
+        setUiBill([addBill, ...uiBill]);
+      });
+  };
+  const updateData = (id) => {
+    setUpdateTrue(true);
+    const addBill = {
+      name: name,
+      email: email,
+      phone: phone,
+      amount: amount,
+      id: "",
+    };
+    setUpdate(addBill);
+    console.log(update);
+    // setDataUpdate(id);
+  };
+
+  return (
+    <>
+      <div className="navbar bg-base-100 drop-shadow-lg rounded-lg mt-20 mb-5">
+        <div className="flex-1">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="input input-bordered input-info w-full max-w-xs"
+            onChange={(event) => {
+              setSearch(event.target.value);
+            }}
+          />
+        </div>
+        <div className="flex-none">
+          <ul className="menu menu-horizontal p-0">
+            <label htmlFor="my-modal-6" className="btn btn-xs btn-warning mr-5">
+              Add New Bill
+            </label>
+          </ul>
+        </div>
+      </div>
+      <input type="checkbox" id="my-modal-6" className="modal-toggle" />
+      <div className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <label
+            htmlFor="my-modal-6"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <div className="inventory-text mx-16 my-5">
+            <div className="inventory-textbox mb-1">
+              <h4 className="text-center font-bold">Add Bill</h4>
+            </div>
+            <p className="inventory-textbox">
+              <input
+                name="name"
+                placeholder="Full Name"
+                type="text"
+                onBlur={changeName}
+              />
+            </p>
+            <p className="inventory-textbox">
+              <input
+                name="email"
+                placeholder="Email"
+                type="email"
+                onBlur={changeEmail}
+              />
+            </p>
+            <p className="inventory-textbox">
+              <input
+                name="phone"
+                placeholder="Phone"
+                type="number"
+                onBlur={changePhone}
+              />
+            </p>
+            <p className="inventory-textbox">
+              <input
+                required
+                name="amount"
+                placeholder="Paid Amount"
+                type="number"
+                onBlur={changeAmount}
+              />
+            </p>
+            <div className="modal-action text-center py-2 ">
+              {!updateTrue ? (
+                <button
+                  type="submit"
+                  className="btn py-2 mx-auto"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="btn py-2 mx-auto"
+                  onClick={updateData}
+                >
+                  Update
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <BillingPage
+        bill={bill}
+        setBill={setBill}
+        uiBill={uiBill}
+        search={search}
+        setTrueID={setTrueID}
+        trueID={trueID}
+        paidTotal={paidTotal}
+        update={update}
+      />
+    </>
+  );
 };
 
 export default SubmissionForm;
